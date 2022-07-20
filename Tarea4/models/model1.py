@@ -33,7 +33,7 @@ class Model1(QgsProcessingAlgorithm):
         outputs['DropFields'] = processing.run('native:deletecolumn', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
         results['Wldsout'] = outputs['DropFields']['OUTPUT']
         return results
-
+    # Se define a la funcion name con el parametro self, que regresa el model1
     def name(self):
         return 'model1'
 
