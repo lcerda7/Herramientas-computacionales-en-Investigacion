@@ -34,13 +34,22 @@ class Model4b(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink('Add_geo_coast', 'add_geo_coast', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the
-        # overall progress through the model
+##############################################################################################
+# Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the
+# overall progress through the model
+##############################################################################################
+#Use una retroalimentación de varios pasos, de modo que los informes de progreso del algoritmo de 
+#child individuales se ajusten al progreso general a través del modelo
+##############################################################################################
+
         feedback = QgsProcessingMultiStepFeedback(22, model_feedback)
         results = {}
         outputs = {}
-
-        # Join attributes by field value
+#################################################################
+# Join attributes by field value
+#################################################################
+# se hace la unión usando los campos 'cat'
+#################################################################
         alg_params = {
             'DISCARD_NONMATCHING': False,
             'FIELD': 'cat',
@@ -58,8 +67,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(1)
         if feedback.isCanceled():
             return {}
+#################################################################
+# Drop field(s) - cat_adjust
+#################################################################
+# Se elimina la variable 'xcoord','ycoord'
+#################################################################
 
-        # Drop field(s) - cat_adjust
         alg_params = {
             'COLUMN': ['xcoord','ycoord'],
             'INPUT': 'Calculated_0ceb76a4_3337_49c4_b49f_15bd60354bc3',
@@ -71,8 +84,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
         if feedback.isCanceled():
             return {}
+################################################################
+# Fix geometries - countries
+################################################################
+# Se corrigen la geografia del archivo ne_10m_admin_0_countries.shp
+################################################################
 
-        # Fix geometries - countries
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp',
             'OUTPUT': parameters['Fixgeo_countries']
@@ -83,8 +100,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(3)
         if feedback.isCanceled():
             return {}
+###################################################################
+# Field calculator - cat adjust
+###################################################################
+# Se calcula Nearest_cat_adjust
+##################################################################
 
-        # Field calculator - cat adjust
         alg_params = {
             'FIELD_LENGTH': 4,
             'FIELD_NAME': 'cat',
@@ -100,8 +121,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(4)
         if feedback.isCanceled():
             return {}
-
-        # Add geometry attributes
+        
+#########################################################
+# Add geometry attributes
+#########################################################
+# Se agrega los atributos a la geometria para generar Centroids_w_coord
+#########################################################
+    
         alg_params = {
             'CALC_METHOD': 0,  # Layer CRS
             'INPUT': 'Centroids_9d86384d_dcd8_4dad_a8eb_03c0471fd55f',
@@ -114,7 +140,14 @@ class Model4b(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
 
-        # Add geometry attributes
+        
+########################################################
+# Add geometry attributes
+#########################################################
+# Se agrega los atributos a la geometria para generar Add_geo_coast
+#########################################################        
+        
+        
         alg_params = {
             'CALC_METHOD': 0,  # Layer CRS
             'INPUT': 'Remaining_fields_9696b96a_c75c_4c94_a218_5873cd1792c3',
@@ -127,7 +160,12 @@ class Model4b(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
 
-        # Drop field(s) - centroids_coast_joined
+#############################################################        
+# Drop field(s) - centroids_coast_joined
+#############################################################
+# Se eliminan las variables no necesarias
+#############################################################
+
         alg_params = {
             'COLUMN': ['featurecla','scalerank','LABELRANK','SOVEREIGNT','SOV_A3','ADM0_DIF','LEVEL','TYPE','TLC','ADM0_A3','GEOU_DIF','GEOUNIT','GU_A3','SU_DIF','SUBUNIT','SU_A3','BRK_DIFF','NAME','NAME_LONG','BRK_A3','BRK_NAME','BRK_GROUP','ABBREV','POSTAL','FORMAL_EN','FORMAL_FR','NAME_CIAWF','NOTE_ADM0','NOTE_BRK','NAME_SORT','NAME_ALT','MAPCOLOR7','MAPCOLOR8','MAPCOLOR9','MAPCOLOR13','POP_EST','POP_RANK','POP_YEAR','GDP_MD','GDP_YEAR','ECONOMY','INCOME_GRP','FIPS_10','ISO_A2','ISO_A2_EH','ISO_A3_EH','ISO_N3','ISO_N3_EH','UN_A3','WB_A2','WB_A3','WOE_ID','WOE_ID_EH','WOE_NOTE','ADM0_ISO','ADM0_DIFF','ADM0_TLC','ADM0_A3_US','ADM0_A3_FR','ADM0_A3_RU','ADM0_A3_ES','ADM0_A3_CN','ADM0_A3_TW','ADM0_A3_IN','ADM0_A3_NP','ADM0_A3_PK','ADM0_A3_DE','ADM0_A3_GB','ADM0_A3_BR','ADM0_A3_IL','ADM0_A3_PS','ADM0_A3_SA','ADM0_A3_EG','ADM0_A3_MA','ADM0_A3_PT','ADM0_A3_AR','ADM0_A3_JP','ADM0_A3_KO','ADM0_A3_VN','ADM0_A3_TR','ADM0_A3_ID','ADM0_A3_PL','ADM0_A3_GR','ADM0_A3_IT','ADM0_A3_NL','ADM0_A3_SE','ADM0_A3_BD','ADM0_A3_UA','ADM0_A3_UN','ADM0_A3_WB','CONTINENT','REGION_UN','SUBREGION','REGION_WB','NAME_LEN','LONG_LEN','ABBREV_LEN','TINY','HOMEPART','MIN_ZOOM','MIN_LABEL','MAX_LABEL','LABEL_X','LABEL_Y','NE_ID','WIKIDATAID','NAME_AR','NAME_BN','NAME_DE','NAME_EN','NAME_ES','NAME_FA','NAME_FR','NAME_EL','NAME_HE','NAME_HI','NAME_HU','NAME_ID','NAME_IT','NAME_JA','NAME_KO','NAME_NL','NAME_PL','NAME_PT','NAME_RU','NAME_SV','NAME_TR','NAME_UK','NAME_UR','NAME_VI','NAME_ZH','NAME_ZHT','FCLASS_ISO','TLC_DIFF','FCLASS_TLC','FCLASS_US','FCLASS_FR','FCLASS_RU','FCLASS_ES','FCLASS_CN','FCLASS_TW','FCLASS_IN','FCLASS_NP','FCLASS_PK','FCLASS_DE','FCLASS_GB','FCLASS_BR','FCLASS_IL','FCLASS_PS','FCLASS_SA','FCLASS_EG','FCLASS_MA','FCLASS_PT','FCLASS_AR','FCLASS_JP','FCLASS_KO','FCLASS_VN','FCLASS_TR','FCLASS_ID','FCLASS_PL','FCLASS_GR','FCLASS_IT','FCLASS_NL','FCLASS_SE','FCLASS_BD','FCLASS_UA','ADMIN_2','ISO_A3_2'],
             'INPUT': 'Joined_layer_657def29_79eb_47f5_acf7_dfb2e822e86a',
@@ -139,8 +177,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(7)
         if feedback.isCanceled():
             return {}
+        
+#############################################################        
+# Drop field(s) - coast_lon
+#############################################################
+# Se eliminan la variables no necesarias 'xcoord','ycoord'
+#############################################################
 
-        # Drop field(s) - coast_lon
         alg_params = {
             'COLUMN': ['xcoord','ycoord'],
             'INPUT': 'Calculated_fd6de8a8_4baf_4c07_88a1_920472db8d05',
@@ -153,7 +196,12 @@ class Model4b(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
 
-        # Drop field(s) - fixgeo_coast
+#############################################################        
+# Drop field(s) - fixgeo_coast
+#############################################################
+# Se eliminan la variables no necesaria scalerank
+#############################################################
+
         alg_params = {
             'COLUMN': ['scalerank'],
             'INPUT': 'Fixed_geometries_fed85ab2_2d33_4700_9a59_b62765ea7fe3',
@@ -165,8 +213,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(9)
         if feedback.isCanceled():
             return {}
+        
+####################################################
+# Fix geometries - coast
+####################################################
+# se corrige la geografia de ne_10m_coastline.shp
+#####################################################
 
-        # Fix geometries - coast
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_coastline/ne_10m_coastline.shp',
             'OUTPUT': parameters['Fixgeo_coast']
@@ -177,8 +230,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(10)
         if feedback.isCanceled():
             return {}
+        
+###########################################
+# Centroids
+###########################################
+# creamos una capa de puntos Country_centroids en los centroides 
+###########################################
 
-        # Centroids
         alg_params = {
             'ALL_PARTS': False,
             'INPUT': outputs['FixGeometriesCountries']['OUTPUT'],
@@ -190,8 +248,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(11)
         if feedback.isCanceled():
             return {}
+        
+#################################################
+# Field calculator - coast_lat
+################################################
+# se genera el calculo de Coast_lat
+################################################
 
-        # Field calculator - coast_lat
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'coast_lat',
@@ -207,8 +270,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(12)
         if feedback.isCanceled():
             return {}
-
-        # Field calculator - cent_lon
+        
+#################################################
+ # Field calculator - cent_lon
+################################################
+# se genera el calculo de cent_lon
+################################################
+       
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'cant_lon',
@@ -224,8 +292,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(13)
         if feedback.isCanceled():
             return {}
-
-        # Extract by attribute
+#################################################
+# Extract by attribute
+##################################################
+# Creamos una nueva capa vectorial que solo contiene las características que nos interesa
+##############################################
+    
         alg_params = {
             'FIELD': 'distance',
             'INPUT': 'Vertices_cd575656_1d01_4550_8cb8_6b46dfcd2ece',
@@ -239,8 +311,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(14)
         if feedback.isCanceled():
             return {}
+###################################################
+# Drop field(s) - centroids_w_coord
+###################################################
+# Se eliminan multiples variables a no utilizar
+###################################################
 
-        # Drop field(s) - centroids_w_coord
         alg_params = {
             'COLUMN': ['featurecla','scalerank','LABELRANK','SOVEREIGNT','SOV_A3','ADM0_DIF','LEVEL','TYPE','TLC','ADM0_A3','GEOU_DIF','GEOUNIT','GU_A3','SU_DIF','SUBUNIT','SU_A3','BRK_DIFF','NAME','NAME_LONG','BRK_A3','BRK_NAME','BRK_GROUP','ABBREV','POSTAL','FORMAL_EN','FORMAL_FR','NAME_CIAWF','NOTE_ADM0','NOTE_BRK','NAME_SORT','NAME_ALT','MAPCOLOR7','MAPCOLOR8','MAPCOLOR9','MAPCOLOR13','POP_EST','POP_RANK','POP_YEAR','GDP_MD','GDP_YEAR','ECONOMY','INCOME_GRP','FIPS_10','ISO_A2','ISO_A2_EH','ISO_A3_EH','ISO_N3','ISO_N3_EH','UN_A3','WB_A2','WB_A3','WOE_ID','WOE_ID_EH','WOE_NOTE','ADM0_ISO','ADM0_DIFF','ADM0_TLC','ADM0_A3_US','ADM0_A3_FR','ADM0_A3_RU','ADM0_A3_ES','ADM0_A3_CN','ADM0_A3_TW','ADM0_A3_IN','ADM0_A3_NP','ADM0_A3_PK','ADM0_A3_DE','ADM0_A3_GB','ADM0_A3_BR','ADM0_A3_IL','ADM0_A3_PS','ADM0_A3_SA','ADM0_A3_EG','ADM0_A3_MA','ADM0_A3_PT','ADM0_A3_AR','ADM0_A3_JP','ADM0_A3_KO','ADM0_A3_VN','ADM0_A3_TR','ADM0_A3_ID','ADM0_A3_PL','ADM0_A3_GR','ADM0_A3_IT','ADM0_A3_NL','ADM0_A3_SE','ADM0_A3_BD','ADM0_A3_UA','ADM0_A3_UN','ADM0_A3_WB','CONTINENT','REGION_UN','SUBREGION','REGION_WB','NAME_LEN','LONG_LEN','ABBREV_LEN','TINY','HOMEPART','MIN_ZOOM','MIN_LABEL','MAX_LABEL','LABEL_X','LABEL_Y','NE_ID','WIKIDATAID','NAME_AR','NAME_BN','NAME_DE','NAME_EN','NAME_ES','NAME_FA','NAME_FR','NAME_EL','NAME_HE','NAME_HI','NAME_HU','NAME_ID','NAME_IT','NAME_JA','NAME_KO','NAME_NL','NAME_PL','NAME_PT','NAME_RU','NAME_SV','NAME_TR','NAME_UK','NAME_UR','NAME_VI','NAME_ZH','NAME_ZHT','FCLASS_ISO','TLC_DIFF','FCLASS_TLC','FCLASS_US','FCLASS_FR','FCLASS_RU','FCLASS_ES','FCLASS_CN','FCLASS_TW','FCLASS_IN','FCLASS_NP','FCLASS_PK','FCLASS_DE','FCLASS_GB','FCLASS_BR','FCLASS_IL','FCLASS_PS','FCLASS_SA','FCLASS_EG','FCLASS_MA','FCLASS_PT','FCLASS_AR','FCLASS_JP','FCLASS_KO','FCLASS_VN','FCLASS_TR','FCLASS_ID','FCLASS_PL','FCLASS_GR','FCLASS_IT','FCLASS_NL','FCLASS_SE','FCLASS_BD','FCLASS_UA','ADMIN_2','ISO_A3_2'],
             'INPUT': 'Added_geom_info_8c204278_878a_45f4_a90f_6ead7343aaf4',
@@ -252,8 +328,12 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(15)
         if feedback.isCanceled():
             return {}
+#######################################################
+# v.distance
+#######################################################
+# buscamos el elemento más cercano en el mapa
+#######################################################
 
-        # v.distance
         alg_params = {
             'GRASS_MIN_AREA_PARAMETER': 0.0001,
             'GRASS_OUTPUT_TYPE_PARAMETER': 0,  # auto
@@ -281,8 +361,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(16)
         if feedback.isCanceled():
             return {}
-
-        # Field calculator - coast_lon
+        
+#################################################
+# Field calculator - coast_lon
+#################################################
+# se calcula la variable coast_lon
+#################################################
+    
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'coast_lon',
@@ -298,8 +383,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(17)
         if feedback.isCanceled():
             return {}
+        
+###################################################
+# Drop field(s) cen_lat_lon
+####################################################
+# se eliminan multiples columnas que no se utilizan
+#####################################################
 
-        # Drop field(s) cen_lat_lon
         alg_params = {
             'COLUMN': ['fid','cat','xcoord','ycoord','fid_2','cat_2','vertex_index','vertex_part','vertex_part','_index','angle'],
             'INPUT': 'Calculated_5f70e3b8_4982_44e5_aa03_7b5a8ce34931',
@@ -311,8 +401,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(18)
         if feedback.isCanceled():
             return {}
+        
+##########################################################
+# Join attributes by field value - ccentroids y coast
+##########################################################
+# se hace la unión usando los campos ISO_A3
+###########################################################
 
-        # Join attributes by field value - ccentroids y coast
         alg_params = {
             'DISCARD_NONMATCHING': False,
             'FIELD': 'ISO_A3',
@@ -330,8 +425,11 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(19)
         if feedback.isCanceled():
             return {}
+        
+###################################################
+# Extract vertices
+####################################################
 
-        # Extract vertices
         alg_params = {
             'INPUT': 'Joined_layer_4fd3c2ad_817f_443e_bba8_b0fd49c1bd99',
             'OUTPUT': parameters['Extract_vertices']
@@ -342,8 +440,13 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(20)
         if feedback.isCanceled():
             return {}
-
+        
+##############################################
         # Field calculator - cant_lat
+################################################
+# se calcula la variable cant_lat
+###############################################
+
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'cant_lat',
@@ -359,8 +462,11 @@ class Model4b(QgsProcessingAlgorithm):
         feedback.setCurrentStep(21)
         if feedback.isCanceled():
             return {}
+        
+###################################################
+# Extract vertices
+####################################################
 
-        # Extract vertices
         alg_params = {
             'INPUT': 'Remaining_fields_1f8c1a97_3f52_4089_ad1a_f921b07f30dd',
             'OUTPUT': parameters['Extract_vertices']
