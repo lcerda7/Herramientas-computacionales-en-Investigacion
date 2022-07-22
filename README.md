@@ -4,10 +4,10 @@ Integrantes: Luis Cerda y Gonzalo Rigirozzi
 
 TP:one::arrow_right: En su respositorio propio
 
-TP2: GIS
+TP:two::arrow_right: GIS
 Crear 3 mapas y 3 gráficos a partir de los datos de Airbn.
 Datos de Buenos Aires y hacer un mapa para cada variable.
 
-TP3 : Stata,Python Scrapping + QGIS
+TP:three::arrow_right: Stata,Python Scrapping + QGIS
 
-TP4 : Python + QGIS
+TP:four::arrow_right: Python + QGIS
