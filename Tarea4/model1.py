@@ -22,10 +22,13 @@ class Model1(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(6, model_feedback)
         results = {}
         outputs = {}
+        
         #######################################################################
         # Field calculator clone
         #######################################################################
         # Se crea el campo lnm que contiene NAME_PROP con <11 observaciones.
+        #######################################################################
+        
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'lnm',
@@ -45,6 +48,8 @@ class Model1(QgsProcessingAlgorithm):
         # Drop field(s)
         #######################################################################
         #Elimino los campos que no seran utilizados.
+        #######################################################################
+        
         alg_params = {
             'COLUMN': ['ID_ISO_A3','ID_ISO_A2','ID_FIPS','NAM_LABEL','NAME_PROP','NAME2','NAM_ANSI','CNT','C1','POP','LMP_POP1','G','LMP_CLASS','FAMILYPROP','FAMILY','langpc_km2','length'],
             'INPUT': 'Calculated_63984e28_a018_4104_8a56_e0988f1c756a',
@@ -60,6 +65,8 @@ class Model1(QgsProcessingAlgorithm):
         # Feature filter
         ########################################################################
         #Se filtran datos <11
+        #######################################################################
+        
         alg_params = {
             'INPUT': 'Calculated_f9972be6_9f28_4ac8_bf13_056cdc3c3c3f',
             'OUTPUT_menor_a_11': parameters['Output_menor_a_11']
@@ -74,6 +81,8 @@ class Model1(QgsProcessingAlgorithm):
         # Field calculator
         #######################################################################
         # Se crea campo Lenght con el lenght del campo NAME_PROP
+        #######################################################################
+        
         alg_params = {
             'FIELD_LENGTH': 2,
             'FIELD_NAME': 'length',
@@ -92,7 +101,9 @@ class Model1(QgsProcessingAlgorithm):
         #######################################################################
         # Fix geometries
         #######################################################################
-        # Se arregla geometria.
+        # Se arregla geometria de langa.shp
+        #######################################################################
+        
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Downloads/langa/langa.shp',
             'OUTPUT': parameters['Fix_geo']
@@ -107,6 +118,8 @@ class Model1(QgsProcessingAlgorithm):
         # Add autoincremental field
         #######################################################################
         #Se crea ID para cada Countrie
+        #######################################################################
+        
         alg_params = {
             'FIELD_NAME': 'GID',
             'GROUP_FIELDS': [''],
