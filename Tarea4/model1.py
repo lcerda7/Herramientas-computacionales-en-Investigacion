@@ -1,17 +1,11 @@
-"""
-Model exported as python.
-Name : model1
-Group : 
-With QGIS : 32208
-"""
-
+#Se importan los paquetes.
 from qgis.core import QgsProcessing
 from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessingMultiStepFeedback
 from qgis.core import QgsProcessingParameterFeatureSink
 import processing
 
-
+#Se define el Model1
 class Model1(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
@@ -28,8 +22,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(6, model_feedback)
         results = {}
         outputs = {}
-
+        #######################################################################
         # Field calculator clone
+        #######################################################################
+        # Se crea el campo lnm que contiene NAME_PROP con <11 observaciones.
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'lnm',
@@ -45,8 +41,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(1)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Drop field(s)
+        #######################################################################
+        #Elimino los campos que no seran utilizados.
         alg_params = {
             'COLUMN': ['ID_ISO_A3','ID_ISO_A2','ID_FIPS','NAM_LABEL','NAME_PROP','NAME2','NAM_ANSI','CNT','C1','POP','LMP_POP1','G','LMP_CLASS','FAMILYPROP','FAMILY','langpc_km2','length'],
             'INPUT': 'Calculated_63984e28_a018_4104_8a56_e0988f1c756a',
@@ -58,8 +56,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Feature filter
+        #######################################################################
+        #Se filtran datos <11
         alg_params = {
             'INPUT': 'Calculated_f9972be6_9f28_4ac8_bf13_056cdc3c3c3f',
             'OUTPUT_menor_a_11': parameters['Output_menor_a_11']
@@ -70,8 +70,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(3)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Field calculator
+        #######################################################################
+        # Se crea campo Lenght con el lenght del campo NAME_PROP
         alg_params = {
             'FIELD_LENGTH': 2,
             'FIELD_NAME': 'length',
@@ -87,8 +89,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(4)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Fix geometries
+        #######################################################################
+        # Se arregla geometria.
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Downloads/langa/langa.shp',
             'OUTPUT': parameters['Fix_geo']
@@ -99,8 +103,10 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(5)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Add autoincremental field
+        #######################################################################
+        #Se crea ID para cada Countrie
         alg_params = {
             'FIELD_NAME': 'GID',
             'GROUP_FIELDS': [''],
