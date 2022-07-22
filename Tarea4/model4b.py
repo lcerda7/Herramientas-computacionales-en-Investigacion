@@ -1,10 +1,4 @@
-"""
-Model exported as python.
-Name : model4b
-Group : 
-With QGIS : 32208
-"""
-
+#Se importan los paquetes necesarios.
 from qgis.core import QgsProcessing
 from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessingMultiStepFeedback
