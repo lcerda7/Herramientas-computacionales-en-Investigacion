@@ -1,10 +1,4 @@
-"""
-Model exported as python.
-Name : model4c
-Group : 
-With QGIS : 32208
-"""
-
+#Se importan paquetes necesarios.
 from qgis.core import QgsProcessing
 from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessingMultiStepFeedback
@@ -12,7 +6,9 @@ from qgis.core import QgsProcessingParameterFeatureSink
 from qgis.core import QgsCoordinateReferenceSystem
 import processing
 
-
+#######################################################################
+#se define el modelo 4c
+#######################################################################
 class Model4c(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
@@ -27,8 +23,9 @@ class Model4c(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         results = {}
         outputs = {}
-
-        # Reproject layer
+        ############################################################
+        # Reproject layer se reproyectan countries, en ESRI:54034
+        ############################################################
         alg_params = {
             'INPUT': 'Remaining_fields_befb7c77_3d1d_40e5_af83_b3275ab18d38',
             'OPERATION': '',
@@ -41,8 +38,9 @@ class Model4c(QgsProcessingAlgorithm):
         feedback.setCurrentStep(1)
         if feedback.isCanceled():
             return {}
-
-        # Drop field(s)
+        #######################################################################
+        # Drop field(s) Se elimina los campos que no seran usados, se nombra al output Contries_drop_fields
+        #######################################################################
         alg_params = {
             'COLUMN': ['featurecla','scalerank','LABELRANK','SOVEREIGNT','SOV_A3','ADM0_DIF','LEVEL','TYPE','TLC','ADM0_A3','GEOU_DIF','GEOUNIT','GU_A3','SU_DIF','SUBUNIT','SU_A3','BRK_DIFF','NAME','NAME_LONG','BRK_A3','BRK_NAME','BRK_GROUP','ABBREV','POSTAL','FORMAL_EN','FORMAL_FR','NAME_CIAWF','NOTE_ADM0','NOTE_BRK','NAME_SORT','NAME_ALT','MAPCOLOR7','MAPCOLOR8','MAPCOLOR9','MAPCOLOR13','POP_EST','POP_RANK','POP_YEAR','GDP_MD','GDP_YEAR','ECONOMY','INCOME_GRP','FIPS_10','ISO_A2','ISO_A2_EH','ISO_A3_EH','ISO_N3','ISO_N3_EH','UN_A3','WB_A2','WB_A3','WOE_ID','WOE_ID_EH','WOE_NOTE','ADM0_ISO','ADM0_DIFF','ADM0_TLC','ADM0_A3_US','ADM0_A3_FR','ADM0_A3_RU','ADM0_A3_ES','ADM0_A3_CN','ADM0_A3_TW','ADM0_A3_IN','ADM0_A3_NP','ADM0_A3_PK','ADM0_A3_DE','ADM0_A3_GB','ADM0_A3_BR','ADM0_A3_IL','ADM0_A3_PS','ADM0_A3_SA','ADM0_A3_EG','ADM0_A3_MA','ADM0_A3_PT','ADM0_A3_AR','ADM0_A3_JP','ADM0_A3_KO','ADM0_A3_VN','ADM0_A3_TR','ADM0_A3_ID','ADM0_A3_PL','ADM0_A3_GR','ADM0_A3_IT','ADM0_A3_NL','ADM0_A3_SE','ADM0_A3_BD','ADM0_A3_UA','ADM0_A3_UN','ADM0_A3_WB','CONTINENT','REGION_UN','SUBREGION','REGION_WB','NAME_LEN','LONG_LEN','ABBREV_LEN','TINY','HOMEPART','MIN_ZOOM','MIN_LABEL','MAX_LABEL','LABEL_X','LABEL_Y','NE_ID','WIKIDATAID','NAME_AR','NAME_BN','NAME_DE','NAME_EN','NAME_ES','NAME_FA','NAME_FR','NAME_EL','NAME_HE','NAME_HI','NAME_HU','NAME_ID','NAME_IT','NAME_JA','NAME_KO','NAME_NL','NAME_PL','NAME_PT','NAME_RU','NAME_SV','NAME_TR','NAME_UK','NAME_UR','NAME_VI','NAME_ZH','NAME_ZHT','FCLASS_ISO','TLC_DIFF','FCLASS_TLC','FCLASS_US','FCLASS_FR','FCLASS_RU','FCLASS_ES','FCLASS_CN','FCLASS_TW','FCLASS_IN','FCLASS_NP','FCLASS_PK','FCLASS_DE','FCLASS_GB','FCLASS_BR','FCLASS_IL','FCLASS_PS','FCLASS_SA','FCLASS_EG','FCLASS_MA','FCLASS_PT','FCLASS_AR','FCLASS_JP','FCLASS_KO','FCLASS_VN','FCLASS_TR','FCLASS_ID','FCLASS_PL','FCLASS_GR','FCLASS_IT','FCLASS_NL','FCLASS_SE','FCLASS_BD','FCLASS_UA'],
             'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp',
@@ -54,8 +52,10 @@ class Model4c(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Field calculator
+        #######################################################################
+        #Se genera el campo km2area, que contiene los km2 de cada pais
         alg_params = {
             'FIELD_LENGTH': 10,
             'FIELD_NAME': 'km2area',
@@ -71,8 +71,10 @@ class Model4c(QgsProcessingAlgorithm):
         feedback.setCurrentStep(3)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Fix geometries
+        #######################################################################
+        # Se arreglan las Geometrias de lo reproyectado
         alg_params = {
             'INPUT': 'Reprojected_754e0ec3_4d6b_440c_a901_730b73b87148',
             'OUTPUT': parameters['Countries_fixgeo']
@@ -83,8 +85,10 @@ class Model4c(QgsProcessingAlgorithm):
         feedback.setCurrentStep(4)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Save vector features to file
+        #######################################################################
+        #Se guarda en formato .csv bajo el nombre areas_out.csv
         alg_params = {
             'DATASOURCE_OPTIONS': '',
             'INPUT': 'areas_out [ESRI:54034]',
