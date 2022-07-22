@@ -1,8 +1,8 @@
-# Herramientas-computacionales-en-Investigacion
+# Herramientas computacionales en Investigacion
 En este repositorio se agregaran trabajos practicos de la materia Herramientas Computacionales Para investigacion
 Integrantes: Luis Cerda y Gonzalo Rigirozzi
 
-TP1: En su respositorio propio
+TP:one::arrow_right: En su respositorio propio
 
 TP2: GIS
 Crear 3 mapas y 3 gráficos a partir de los datos de Airbn.
