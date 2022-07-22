@@ -21,9 +21,13 @@ class Model4a(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
         results = {}
         outputs = {}
+        
         #######################################################################
         # Fix geometries - wlds
         #######################################################################
+        # se corrige la geometria de clean.shp
+        #######################################################################
+        
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Desktop/Clase 4/OUTPUT/clean.shp',
             'OUTPUT': parameters['Fixgeo_wlds']
