@@ -1,17 +1,13 @@
-"""
-Model exported as python.
-Name : model4a
-Group : 
-With QGIS : 32208
-"""
-
+#import los paquetes necesarios.
 from qgis.core import QgsProcessing
 from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessingMultiStepFeedback
 from qgis.core import QgsProcessingParameterFeatureSink
 import processing
+#############################################
 
-
+#Se crea model 4a
+#############################################
 class Model4a(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
@@ -25,8 +21,9 @@ class Model4a(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
         results = {}
         outputs = {}
-
+        #######################################################################
         # Fix geometries - wlds
+        #######################################################################
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Desktop/Clase 4/OUTPUT/clean.shp',
             'OUTPUT': parameters['Fixgeo_wlds']
@@ -37,8 +34,10 @@ class Model4a(QgsProcessingAlgorithm):
         feedback.setCurrentStep(1)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Fix geometries - contries
+        #######################################################################
+        # Se arreglan geometrias de countries.shp
         alg_params = {
             'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp',
             'OUTPUT': parameters['Fixgeo_countries']
@@ -49,8 +48,10 @@ class Model4a(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
         if feedback.isCanceled():
             return {}
-
+        #######################################################################
         # Statistics by categories
+        #######################################################################
+        #Se genera y exporta cantidad de lenguas por pais en formato .csv
         alg_params = {
             'CATEGORIES_FIELD_NAME': ['ADMIN'],
             'INPUT': 'Intersection_7a8169c8_148a_4cd5_892a_d79533348735',
@@ -63,8 +64,10 @@ class Model4a(QgsProcessingAlgorithm):
         feedback.setCurrentStep(3)
         if feedback.isCanceled():
             return {}
-
+        ########################################################################
         # Intersection
+        ########################################################################
+        #Interseccion entre .shp
         alg_params = {
             'INPUT': outputs['FixGeometriesWlds']['OUTPUT'],
             'INPUT_FIELDS': ['GID'],
