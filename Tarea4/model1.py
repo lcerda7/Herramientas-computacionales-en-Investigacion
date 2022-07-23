@@ -24,6 +24,23 @@ class Model1(QgsProcessingAlgorithm):
         outputs = {}
         
         #######################################################################
+        # Fix geometries
+        #######################################################################
+        # Se arregla geometria de langa.shp
+        #######################################################################
+        
+        alg_params = {
+            'INPUT': '/Users/gonzalorigirozzi/Downloads/langa/langa.shp',
+            'OUTPUT': parameters['Fix_geo']
+        }
+        outputs['FixGeometries'] = processing.run('native:fixgeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        results['Fix_geo'] = outputs['FixGeometries']['OUTPUT']
+
+        feedback.setCurrentStep(5)
+        if feedback.isCanceled():
+            return {}
+        
+        #######################################################################
         # Field calculator clone
         #######################################################################
         # Se crea el campo lnm que contiene NAME_PROP con <11 observaciones.
@@ -98,22 +115,7 @@ class Model1(QgsProcessingAlgorithm):
         feedback.setCurrentStep(4)
         if feedback.isCanceled():
             return {}
-        #######################################################################
-        # Fix geometries
-        #######################################################################
-        # Se arregla geometria de langa.shp
-        #######################################################################
-        
-        alg_params = {
-            'INPUT': '/Users/gonzalorigirozzi/Downloads/langa/langa.shp',
-            'OUTPUT': parameters['Fix_geo']
-        }
-        outputs['FixGeometries'] = processing.run('native:fixgeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['Fix_geo'] = outputs['FixGeometries']['OUTPUT']
 
-        feedback.setCurrentStep(5)
-        if feedback.isCanceled():
-            return {}
         #######################################################################
         # Add autoincremental field
         #######################################################################
