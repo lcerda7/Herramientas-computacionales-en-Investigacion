@@ -24,25 +24,23 @@ class Model3(QgsProcessingAlgorithm):
         outputs = {}
         
         #######################################################################
-        # Save vector features to file
+        # Fix geometries
         #######################################################################
-        #Se guarda el raster_stats en format .csv
+        #Se arregla la geometria del shp
         #######################################################################
         
         alg_params = {
-            'DATASOURCE_OPTIONS': '',
-            'INPUT': 'Zonal_Statistics_90961545_cd97_4a17_8e85_1c091f1ffbc6',
-            'LAYER_NAME': '',
-            'LAYER_OPTIONS': '',
-            'OUTPUT': '/Users/gonzalorigirozzi/Desktop/Clase 4/OUTPUT/raster_stats.csv',
-            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+            'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp',
+            'OUTPUT': parameters['Fixgeo_3']
         }
-        outputs['SaveVectorFeaturesToFile'] = processing.run('native:savefeatures', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        outputs['FixGeometries'] = processing.run('native:fixgeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        results['Fixgeo_3'] = outputs['FixGeometries']['OUTPUT']
 
-        feedback.setCurrentStep(1)
+        feedback.setCurrentStep(5)
         if feedback.isCanceled():
             return {}
         
+      
         #######################################################################
         # Zonal statistics
         #######################################################################
@@ -104,23 +102,6 @@ class Model3(QgsProcessingAlgorithm):
             return {}
         
         #######################################################################
-        # Fix geometries
-        #######################################################################
-        #Se arregla la geometria del shp
-        #######################################################################
-        
-        alg_params = {
-            'INPUT': '/Users/gonzalorigirozzi/Downloads/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp',
-            'OUTPUT': parameters['Fixgeo_3']
-        }
-        outputs['FixGeometries'] = processing.run('native:fixgeometries', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['Fixgeo_3'] = outputs['FixGeometries']['OUTPUT']
-
-        feedback.setCurrentStep(5)
-        if feedback.isCanceled():
-            return {}
-        
-        #######################################################################
         # Zonal statistics
         #######################################################################
         # Se crea campo que contiene la media de Landq
@@ -178,6 +159,27 @@ class Model3(QgsProcessingAlgorithm):
         }
         outputs['SaveVectorFeaturesToFile'] = processing.run('native:savefeatures', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
         return results
+    
+        #######################################################################
+        # Save vector features to file
+        #######################################################################
+        #Se guarda el raster_stats en format .csv
+        #######################################################################
+        
+        alg_params = {
+            'DATASOURCE_OPTIONS': '',
+            'INPUT': 'Zonal_Statistics_90961545_cd97_4a17_8e85_1c091f1ffbc6',
+            'LAYER_NAME': '',
+            'LAYER_OPTIONS': '',
+            'OUTPUT': '/Users/gonzalorigirozzi/Desktop/Clase 4/OUTPUT/raster_stats.csv',
+            'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT
+        }
+        outputs['SaveVectorFeaturesToFile'] = processing.run('native:savefeatures', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(1)
+        if feedback.isCanceled():
+            return {}
+        
 
     def name(self):
         return 'model3'
