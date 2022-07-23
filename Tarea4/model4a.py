@@ -56,6 +56,25 @@ class Model4a(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
         
+        ########################################################################
+        # Intersection
+        ########################################################################
+        #Interseccion entre .shp
+        #######################################################################
+        
+        alg_params = {
+            'INPUT': outputs['FixGeometriesWlds']['OUTPUT'],
+            'INPUT_FIELDS': ['GID'],
+            'OVERLAY': outputs['FixGeometriesContries']['OUTPUT'],
+            'OVERLAY_FIELDS': ['ADMIN'],
+            'OVERLAY_FIELDS_PREFIX': '',
+            'OUTPUT': parameters['Intersection']
+        }
+        outputs['Intersection'] = processing.run('native:intersection', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+        results['Intersection'] = outputs['Intersection']['OUTPUT']
+        return results
+
+        
         #######################################################################
         # Statistics by categories
         #######################################################################
@@ -75,24 +94,6 @@ class Model4a(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
         
-        ########################################################################
-        # Intersection
-        ########################################################################
-        #Interseccion entre .shp
-        #######################################################################
-        
-        alg_params = {
-            'INPUT': outputs['FixGeometriesWlds']['OUTPUT'],
-            'INPUT_FIELDS': ['GID'],
-            'OVERLAY': outputs['FixGeometriesContries']['OUTPUT'],
-            'OVERLAY_FIELDS': ['ADMIN'],
-            'OVERLAY_FIELDS_PREFIX': '',
-            'OUTPUT': parameters['Intersection']
-        }
-        outputs['Intersection'] = processing.run('native:intersection', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
-        results['Intersection'] = outputs['Intersection']['OUTPUT']
-        return results
-
     def name(self):
         return 'model4a'
 
